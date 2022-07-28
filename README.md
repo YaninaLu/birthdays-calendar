@@ -8,4 +8,4 @@ represented with a datetime object. Then it outputs a list of people who have bi
 People whose birthday this year is on the weekend (Saturdays and Sundays) are displayed on Mondays.
 
 If the script is run on Monday, the week starts on the previous Saturday and ends on Friday. Otherwise, the week starts
-on the day it gets run and lasts for 7 days.
+on the day it gets run and lasts for 7 days. The list is displayed starting with the day of the run. 
