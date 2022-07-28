@@ -1,22 +1,25 @@
 from datetime import datetime, timedelta
+from typing import List, Dict
 
 
-def main(users_dict):
+def main(users_dict: List[Dict[str, datetime]]) -> None:
     """
-    Takes as input a dictionary of user: birthday pairs. Then outputs a dictionary of weekday: usernames pairs for the
-    week to come. If run on Monday, the week starts with the previous Saturday and ends on Friday. If run on any other
+    Takes as input a dictionary of user: birthday pairs. Then outputs and prints a list of lists with names of people whose
+    birthdays are in the range of the next seven days. Indices of the sublists correspond to the days of the week (the
+    weekend is omitted).
+    If run on Monday, the week starts with the previous Saturday and ends on Friday. If run on any other
     day the week starts with this day and ends in 7 days. People with birthdays on the weekend are put on Monday.
 
     :param users_dict: stores names of users as a string and birthdays as a datetime object
-    :return: a dictionary that stores weekdays and usernames of people who have birthdays on that day
+    :return: a list of lists where sublists store the names of people who have birthdays this week
     """
-    today = datetime.now().date()
-    if today.weekday() == 0:
-        start_of_week = today - timedelta(days=2)
+    start = datetime.now().date()
+    if start.weekday() == 0:
+        start_of_week = start - timedelta(days=2)
     else:
-        start_of_week = today
-    delta = timedelta(weeks=1)
-    end_of_week = start_of_week + delta
+        start_of_week = start
+    week_delta = timedelta(weeks=1)
+    end_of_week = start_of_week + week_delta
 
     result = [[], [], [], [], []]
     for user in users_dict:
@@ -28,27 +31,15 @@ def main(users_dict):
             else:
                 result[birthday_weekday].append(user["name"])
 
-    return result
+    weekday_labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+    for delta in range(0, 7):
+        weekday = (start + timedelta(days=delta)).weekday()
+        if weekday <= 4:
+            user_names = result[weekday]
+            if len(user_names) > 0:
+                print(f"{weekday_labels[weekday]}: {', '.join(user_names)}")
 
 
 if __name__ == "__main__":
-    users = [{"name": "Dina", "birthday": datetime(2022, 7, 27)}, {"name": "Dima", "birthday": datetime(2021, 7, 29)},
-             {"name": "Dylan", "birthday": datetime(2021, 7, 27)}, {"name": "Bred", "birthday": datetime(2027, 7, 29)},
-             {"name": "Kate", "birthday": datetime(2020, 7, 30)}, {"name": "Ted", "birthday": datetime(2019, 7, 31)},
-             {"name": "Miryam", "birthday": datetime(1998, 7, 30)},
-             {"name": "Ruslan", "birthday": datetime(1980, 7, 31)},
-             {"name": "Ginger", "birthday": datetime(2018, 7, 24)},
-             {"name": "Henry", "birthday": datetime(2017, 7, 23)},
-             {"name": "Mary", "birthday": datetime(1988, 7, 24)}, {"name": "Barney", "birthday": datetime(1977, 7, 23)},
-             {"name": "Diana", "birthday": datetime(2016, 8, 1)}, {"name": "Trevor", "birthday": datetime(2015, 8, 2)},
-             {"name": "Tracy", "birthday": datetime(2014, 8, 3)}, {"name": "Peter", "birthday": datetime(2013, 8, 4)}]
-
-    weekday_labels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    birthdays = main(users)
-
-    today = datetime.now().date()
-    for delta in range(0, 7):
-        weekday = (today + timedelta(days=delta)).weekday()
-        if weekday <= 4:
-            user_names = birthdays[weekday]
-            print(f"{weekday_labels[weekday]}: {', '.join(user_names)}")
+    main(users)
